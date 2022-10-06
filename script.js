@@ -20,6 +20,7 @@ let isPlaying = false;
 let isRandom = false;
 let updateTimer;
 
+
 const music_list = [
     {
         img : 'images/stay.png',
@@ -83,8 +84,20 @@ const music_list = [
     },
 ];
 
-loadTrack(track_index);
+const api_url = "https://633d5ef2f2b0e623dc7260dd.mockapi.io/api/musicAPI";
+// const music_list = []
 
+// async function fetchData() {
+//     await fetch(api_url)
+//     .then((response) => response.json())
+//     .then((data) => {
+//         music_list.push(...data)
+// })};
+
+// fetchData()
+console.log(music_list)
+
+loadTrack(track_index);
 function loadTrack(track_index){
     clearInterval(updateTimer);
     reset();
@@ -151,14 +164,14 @@ function playTrack(){
     isPlaying = true;
     track_art.classList.add('rotate');
     wave.classList.add('loader');
-    playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-5x"></i>';
+    playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-5x" title="pause"></i>';
 }
 function pauseTrack(){
     curr_track.pause();
     isPlaying = false;
     track_art.classList.remove('rotate');
     wave.classList.remove('loader');
-    playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-5x"></i>';
+    playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-5x" title="play"></i>';
 }
 function nextTrack(){
     if(track_index < music_list.length - 1 && isRandom === false){
@@ -208,8 +221,3 @@ function setUpdate(){
         total_duration.textContent = durationMinutes + ":" + durationMinutes;
     }
 }
-
-
-
-
-
