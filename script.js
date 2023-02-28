@@ -14,98 +14,35 @@ let total_duration = document.querySelector('.total-duration');
 let wave = document.getElementById('wave');
 let randomIcon = document.querySelector('.fa-random');
 let curr_track = document.createElement('audio');
+const volume_down = document.querySelector('.volume_down');
+
 
 let track_index = 0;
 let isPlaying = false;
 let isRandom = false;
 let updateTimer;
 
+// const api_url = "http://localhost:5000/api/music";
+const api_url = "https://musicapi-ytu5.onrender.com/api/music"
 
-const music_list = [
-    {
-        img : 'images/stay.png',
-        name : 'Stay',
-        artist : 'The Kid LAROI, Justin Bieber',
-        music : 'music/stay.mp3'
-    },
-    {
-        img : 'images/fallingdown.jpg',
-        name : 'Falling Down',
-        artist : 'Wid Cards',
-        music : 'music/fallingdown.mp3'
-    },
-    {
-        img : 'images/faded.png',
-        name : 'Faded',
-        artist : 'Alan Walker',
-        music : 'music/Faded.mp3'
-    },
-    {
-        img : 'images/ratherbe.jpg',
-        name : 'Rather Be',
-        artist : 'Clean Bandit',
-        music : 'music/Rather Be.mp3'
-    },
-    {
-        img : 'images/Aino.jpg',
-        name : 'Ái Nộ',
-        artist : 'Masew & Khôi Vũ',
-        music : 'music/AiNo1-MasewKhoiVu.mp3'
-    },
-    {
-        img : 'images/Cauhuachuaventron.jpg',
-        name : 'Câu Hứa Chưa Vẹn Tròn',
-        artist : 'Phát Huy',
-        music : 'music/CauHuaChuaVenTron.mp3'
-    },
-    {
-        img : 'images/Chayvenoiphiaanh.jpg',
-        name : 'Chạy về nơi phía anh',
-        artist : 'Khắc Việt',
-        music : 'music/ChayVeNoiPhiaAnh.mp3'
-    },
-    {
-        img : 'images/Cohenvoithanhxuan.jpg',
-        name : 'Có hẹn với thanh xuân',
-        artist : 'Monstar',
-        music : 'music/cohenvoithanhxuan.mp3'
-    },
-    {
-        img : 'images/Cuoithoi.jpg',
-        name : 'Cưới thôi',
-        artist : 'Masew & Bray',
-        music : 'music/CuoiThoi.mp3'
-    },
-    {
-        img : 'images/Devuong.jpg',
-        name : 'Đế vương',
-        artist : 'Đình Dũng',
-        music : 'music/DeVuong.mp3'
-    },
-];
+const fetchData = async () => {
+    const res = await fetch(api_url);
+    const data = await res.json(); 
+    return data.data;
+};
 
-const api_url = "https://633d5ef2f2b0e623dc7260dd.mockapi.io/api/musicAPI";
-// const music_list = []
-
-// async function fetchData() {
-//     await fetch(api_url)
-//     .then((response) => response.json())
-//     .then((data) => {
-//         music_list.push(...data)
-// })};
-
-// fetchData()
-console.log(music_list)
 
 loadTrack(track_index);
-function loadTrack(track_index){
+
+async function loadTrack(track_index){
+    const music_list = await fetchData()
     clearInterval(updateTimer);
     reset();
 
-    curr_track.src = music_list[track_index].music;
+    curr_track.src = music_list[track_index].musicUrl;
     curr_track.load();
 
-    track_art.style.backgroundImage = "url(" + music_list[track_index].img + ")";
+    track_art.style.backgroundImage = "url(" + music_list[track_index].imageUrl + ")";
     track_name.textContent = music_list[track_index].name;
     track_artist.textContent = music_list[track_index].artist;
     now_playing.textContent = "Playing music " + (track_index + 1) + " of " + music_list.length;
@@ -151,9 +88,9 @@ function pauseRandom(){
     isRandom = false;
     randomIcon.classList.remove('randomActive');
 }
-function repeatTrack(){
+async function repeatTrack(){
     let current_index = track_index;
-    loadTrack(current_index);
+    await loadTrack(current_index);
     playTrack();
 }
 function playpauseTrack(){
@@ -173,7 +110,8 @@ function pauseTrack(){
     wave.classList.remove('loader');
     playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-5x" title="play"></i>';
 }
-function nextTrack(){
+async function nextTrack(){
+    const music_list = await fetchData()
     if(track_index < music_list.length - 1 && isRandom === false){
         track_index += 1;
     }else if(track_index < music_list.length - 1 && isRandom === true){
@@ -182,16 +120,17 @@ function nextTrack(){
     }else{
         track_index = 0;
     }
-    loadTrack(track_index);
+    await loadTrack(track_index);
     playTrack();
 }
-function prevTrack(){
+async function prevTrack(){
+    const music_list = await fetchData()
     if(track_index > 0){
         track_index -= 1;
     }else{
         track_index = music_list.length -1;
     }
-    loadTrack(track_index);
+    await loadTrack(track_index);
     playTrack();
 }
 function seekTo(){
@@ -201,6 +140,12 @@ function seekTo(){
 function setVolume(){
     curr_track.volume = volume_slider.value / 100;
 }
+
+function muteVolume() {
+    curr_track.volume = 0;
+    volume_slider.value = 0;
+}
+
 function setUpdate(){
     let seekPosition = 0;
     if(!isNaN(curr_track.duration)){

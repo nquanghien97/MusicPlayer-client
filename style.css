@@ -37,6 +37,7 @@ body{
 }
 .now-playing{
     font-size: 1rem;
+    margin: 8px 0;
 }
 .track-name{
     font-size: 2rem;
@@ -115,7 +116,8 @@ body{
     padding: 10px;
 }
 i.fa-volume-down,
-i.fa-volume-up{
+i.fa-volume-up,
+i.fa-volume-off{
     padding: 10px;
 }
 i,
